@@ -1,14 +1,14 @@
 # Download ReVanced
-.\download_revanced.ps1
+./download_revanced.sh
 
 # Get adb device
 
 adb devices
-$adb = adb devices | Select-String -Pattern "\w+"
-$adb = $adb.Matches.Groups[1].Value
+adb="$(adb devices | grep '[[:alnum:]]')"
+adb="${adb:24:-7}"
 
 # Get base apk name
-$base = $args[0]
+base=$1
 
 # Install youtube (without root)
 
@@ -16,5 +16,5 @@ java -jar revanced-cli-all.jar -a $base -c -d $adb -o youtube.apk -m integration
 
 # Delete ReVanced files
 
-Remove-Item -Path $base
-.\remove_revanced.ps1
+rm $base
+./remove_revanced.sh
