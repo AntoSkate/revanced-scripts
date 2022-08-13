@@ -1,5 +1,5 @@
 # Download ReVanced
-.\download_revanced.ps1
+.\download-revanced.ps1
 
 # Get adb device
 
@@ -17,4 +17,4 @@ java -jar revanced-cli-all.jar -a $base -c -d $adb -o youtube.apk -m integration
 # Delete ReVanced files
 
 Remove-Item -Path $base
-.\remove_revanced.ps1
+.\remove-revanced.ps1

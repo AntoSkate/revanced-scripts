@@ -1,5 +1,5 @@
 # Download ReVanced
-./download_revanced.sh
+./download-revanced.sh
 
 # Get adb device
 
@@ -17,4 +17,4 @@ java -jar revanced-cli-all.jar -a $base -c -d $adb -o youtube.apk -m integration
 # Delete ReVanced files
 
 rm $base
-./remove_revanced.sh
+./remove-revanced.sh
