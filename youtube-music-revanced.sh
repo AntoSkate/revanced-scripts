@@ -3,7 +3,7 @@
 
 # Get adb device
 
-adb devices
+adb start-server
 adb="$(adb devices | grep '[[:alnum:]]')"
 adb="${adb:24:-7}"
 
