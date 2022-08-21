@@ -16,23 +16,47 @@ integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrati
 integrations="${integrations:16:-2}"
 curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
 
+# Get installation/generation type
+
+type=$1
+
+# Get app name
+
+app=$2
+
+# Get base apk name
+
+base=$3
+
+# Get ReVanced cli parameters
+
+parameters=$4
+
 # Get adb device
 
 adb start-server
 adb="$(adb devices | grep '[[:alnum:]]')"
 adb="${adb:24:-7}"
 
-# Get base apk name
+# ReVanced CLI base command
 
-base=$1
+revanced="$(java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters )"
 
-# Revanced CLI
+# ReVanced
 
-revanced="$(java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar)"
-
-# YouTube
-
-$revanced -d $adb -o youtube.apk -e custom-branding
+if [[ $type -eq "root" ]]
+	$revanced -d $adb -e microg-support --mount
+else
+	if [[ $type -eq "install" ]]
+		$revanced -d $adb
+	else
+		if [[ $type -eq "apk" ]]
+			$revanced
+		else
+			echo "Valid types are only root, install or apk."
+		fi
+	fi
+fi
 
 # Delete files
 
