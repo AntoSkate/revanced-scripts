@@ -1,3 +1,4 @@
+#!/bin/bash
 # Download CLI
 
 cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases/latest | grep "tag_name")"
@@ -16,21 +17,21 @@ integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrati
 integrations="${integrations:16:-2}"
 curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
 
-# Get installation/generation type
+# Get installation method
 
-type=$1
+method=$1
 
 # Get app name
 
 app=$2
 
+# Get ReVanced CLI parameters
+
+parameters=$3
+
 # Get base apk name
 
-base=$3
-
-# Get ReVanced cli parameters
-
-parameters=$4
+base=$4
 
 # Get adb device
 
@@ -42,20 +43,28 @@ adb="${adb:24:-7}"
 
 revanced="$(java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters )"
 
-# ReVanced
+# ReVanced root
 
-if [[ $type -eq "root" ]]
-	$revanced -d $adb -e microg-support --mount
+if [[ "$method" == "root" ]]
+then
+	$revanced -d $adb -e microg-support -e music-microg-support --mount
+
+# ReVanced install
+
+elif [[ "$method" == "install" ]]
+then
+	$revanced -d $adb
+
+# ReVanced apk
+
+elif [[ "$method" == "apk" ]]
+then
+	$revanced
+
+# Error message
+
 else
-	if [[ $type -eq "install" ]]
-		$revanced -d $adb
-	else
-		if [[ $type -eq "apk" ]]
-			$revanced
-		else
-			echo "Valid types are only root, install or apk."
-		fi
-	fi
+	echo "Valid installation methods are only root, install or apk."
 fi
 
 # Delete files

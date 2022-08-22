@@ -16,22 +16,59 @@ $integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/re
 $integrations = $integrations.Matches.Groups[0].Value
 Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
 
+# Get installation method
+
+$method = $args[0]
+
+# Get app name
+
+$app = $args[1]
+
+# Get ReVanced CLI parameters
+
+$parameters = $args[2]
+
+# Get base apk name
+
+$base = $args[3]
+
 # Get adb device
 
 adb start-server
 $adb = adb devices | Select-String -Pattern "\w+"
 $adb = $adb.Matches.Groups[1].Value
 
-# Get base apk name
-$base = $args[0]
-
 # Revanced CLI
 
-$revanced = java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar
+$revanced = java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters
 
-# Youtube
+# ReVanced root
 
-$revanced -d $adb -o youtube.apk -e custom-branding
+if ( $method -eq "root" )
+{
+	$revanced -d $adb -e microg-support -e music-microg-support --mount
+}
+
+# ReVanced install
+
+elseif ( $method -eq "install" )
+{
+	$revanced -d $adb
+}
+
+# ReVanced apk
+
+elseif ( $method -eq "apk" )
+{
+	$revanced
+}
+
+# Error message
+
+else
+{
+	Write-Output "Valid installation methods are only root, install or apk."
+}
 
 # Delete files
 
