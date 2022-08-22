@@ -25,41 +25,47 @@ method=$1
 
 app=$2
 
-# Get ReVanced CLI parameters
-
-parameters=$3
-
 # Get base apk name
 
-base=$4
+base=$3
 
-# Get adb device
+# Get ReVanced CLI parameters
 
-adb start-server
-adb="$(adb devices | grep '[[:alnum:]]')"
-adb="${adb:24:-7}"
-
-# ReVanced CLI base command
-
-revanced="$(java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters )"
+parameters=$4
 
 # ReVanced root
 
 if [[ "$method" == "root" ]]
 then
-	$revanced -d $adb -e microg-support -e music-microg-support --mount
+	# Get adb device
+
+	adb start-server
+	adb="$(adb devices | grep '[[:alnum:]]')"
+	adb="${adb:24:-7}"
+
+	# Mount (root)
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb -e microg-support -e music-microg-support --mount
 
 # ReVanced install
 
 elif [[ "$method" == "install" ]]
 then
-	$revanced -d $adb
+	# Get adb device
+
+	adb start-server
+	adb="$(adb devices | grep '[[:alnum:]]')"
+	adb="${adb:24:-7}"
+
+	# Install (non root)
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb
 
 # ReVanced apk
 
 elif [[ "$method" == "apk" ]]
 then
-	$revanced
+	# Generate apk
+
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters
 
 # Error message
 
