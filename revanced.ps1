@@ -23,6 +23,7 @@ $method = $args[0]
 # Get app name
 
 $app = $args[1]
+$app = $app + ".apk"
 
 # Get base apk name
 
@@ -44,7 +45,7 @@ if ( $method -eq "root" )
 
 	# Mount (root)
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb -e microg-support -e music-microg-support --mount
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters -d $adb -e microg-support -e music-microg-support --mount
 }
 
 # ReVanced install
@@ -59,7 +60,7 @@ elseif ( $method -eq "install" )
 
 	# Install (non root)
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters -d $adb
 }
 
 # ReVanced apk
@@ -68,7 +69,7 @@ elseif ( $method -eq "apk" )
 {
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters
 
 }
 

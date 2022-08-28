@@ -33,6 +33,10 @@ base=$3
 
 parameters=$4
 
+# Output apk
+
+output="${app}.apk"
+
 # ReVanced root
 
 if [[ "$method" == "root" ]]
@@ -44,7 +48,7 @@ then
 	adb="${adb:24:-7}"
 
 	# Mount (root)
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb -e microg-support -e music-microg-support --mount
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters -d $adb -e microg-support -e music-microg-support --mount
 
 # ReVanced install
 
@@ -57,7 +61,7 @@ then
 	adb="${adb:24:-7}"
 
 	# Install (non root)
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters -d $adb
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters -d $adb
 
 # ReVanced apk
 
@@ -65,7 +69,7 @@ elif [[ "$method" == "apk" ]]
 then
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app.apk $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters
 
 # Error message
 
