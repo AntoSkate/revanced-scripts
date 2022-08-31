@@ -24,6 +24,7 @@ method=$1
 # Get app name
 
 app=$2
+app="${app}.apk"
 
 # Get base apk name
 
@@ -33,13 +34,9 @@ base=$3
 
 parameters=$4
 
-# Output apk
+# ReVanced mount
 
-output="${app}.apk"
-
-# ReVanced root
-
-if [[ "$method" == "root" ]]
+if [[ "$method" == "mount" ]]
 then
 	# Get adb device
 
@@ -47,8 +44,9 @@ then
 	adb="$(adb devices | grep '[[:alnum:]]')"
 	adb="${adb:24:-7}"
 
-	# Mount (root)
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters -d $adb -e microg-support -e music-microg-support --mount
+	# Mount
+
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb --mount -e microg-support -e music-microg-support $parameters
 
 # ReVanced install
 
@@ -60,8 +58,9 @@ then
 	adb="$(adb devices | grep '[[:alnum:]]')"
 	adb="${adb:24:-7}"
 
-	# Install (non root)
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters -d $adb
+	# Install
+
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb $parameters
 
 # ReVanced apk
 
@@ -69,12 +68,12 @@ elif [[ "$method" == "apk" ]]
 then
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $output $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters
 
 # Error message
 
 else
-	echo "Valid installation methods are only root, install or apk."
+	echo "Valid installation methods are only mount, install or apk."
 fi
 
 # Delete files

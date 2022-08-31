@@ -33,9 +33,9 @@ $base = $args[2]
 
 $parameters = $args[3]
 
-# ReVanced root
+# ReVanced mount
 
-if ( $method -eq "root" )
+if ( $method -eq "mount" )
 {
 	# Get adb device
 
@@ -43,9 +43,9 @@ if ( $method -eq "root" )
 	$adb = adb devices | Select-String -Pattern "\w+"
 	$adb = $adb.Matches.Groups[1].Value
 
-	# Mount (root)
+	# Mount
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters -d $adb -e microg-support -e music-microg-support --mount
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb --mount -e microg-support -e music-microg-support $parameters
 }
 
 # ReVanced install
@@ -58,9 +58,9 @@ elseif ( $method -eq "install" )
 	$adb = adb devices | Select-String -Pattern "\w+"
 	$adb = $adb.Matches.Groups[1].Value
 
-	# Install (non root)
+	# Install
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters -d $adb
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb $parameters
 }
 
 # ReVanced apk
@@ -77,7 +77,7 @@ elseif ( $method -eq "apk" )
 
 else
 {
-	Write-Output "Valid installation methods are only root, install or apk."
+	Write-Output "Valid installation methods are only mount, install or apk."
 }
 
 # Delete files
