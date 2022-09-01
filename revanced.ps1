@@ -33,6 +33,10 @@ $base = $args[2]
 
 $parameters = $args[3]
 
+# Revanced CLI command
+
+$revanced = "java -jar .\revanced-cli-all.jar -a " + $base + " -c -o " + $app + " -b .\revanced-patches.jar -m .\integrations.apk " + $parameters
+
 # ReVanced mount
 
 if ( $method -eq "mount" )
@@ -45,7 +49,8 @@ if ( $method -eq "mount" )
 
 	# Mount
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb --mount -e microg-support -e music-microg-support $parameters
+	$revanced = $revanced + " -e microg-support -e music-microg-support -d " + $adb + " --mount"
+	Invoke-Expression -Command $revanced
 }
 
 # ReVanced install
@@ -60,7 +65,8 @@ elseif ( $method -eq "install" )
 
 	# Install
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb $parameters
+	$revanced = $revanced + " -d " + $adb
+	Invoke-Expression -Command $revanced
 }
 
 # ReVanced apk
@@ -69,8 +75,7 @@ elseif ( $method -eq "apk" )
 {
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters
-
+	Invoke-Expression -Command $revanced
 }
 
 # Error message
