@@ -44,7 +44,7 @@ if ( $method -eq "mount" )
 	# Get adb device
 
 	adb start-server
-	$adb = adb devices | Select-String -Pattern "\w+"
+	$adb = adb devices | Select-String -Pattern "\S+"
 	$adb = $adb.Matches.Groups[1].Value
 
 	# Mount
@@ -60,7 +60,7 @@ elseif ( $method -eq "install" )
 	# Get adb device
 
 	adb start-server
-	$adb = adb devices | Select-String -Pattern "\w+"
+	$adb = adb devices | Select-String -Pattern "\S+"
 	$adb = $adb.Matches.Groups[1].Value
 
 	# Install

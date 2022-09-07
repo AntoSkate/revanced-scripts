@@ -41,7 +41,7 @@ then
 	# Get adb device
 
 	adb start-server
-	adb="$(adb devices | grep '[[:alnum:]]')"
+	adb="$(adb devices | grep '[[:graph:]]')"
 	adb="${adb:24:-7}"
 
 	# Mount
@@ -55,7 +55,7 @@ then
 	# Get adb device
 
 	adb start-server
-	adb="$(adb devices | grep '[[:alnum:]]')"
+	adb="$(adb devices | grep '[[:graph:]]')"
 	adb="${adb:24:-7}"
 
 	# Install
