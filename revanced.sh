@@ -48,6 +48,20 @@ then
 
 	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb --mount -e microg-support -e music-microg-support $parameters
 
+# ReVanced unmount
+
+if [[ "$method" == "unmount" ]]
+then
+	# Get adb device
+
+	adb start-server
+	adb="$(adb devices | grep '[[:graph:]]')"
+	adb="${adb:24:-7}"
+
+	# Mount
+
+	java -jar revanced-cli-all.jar -a $base -d $adb --uninstall
+
 # ReVanced install
 
 elif [[ "$method" == "install" ]]
@@ -73,7 +87,7 @@ then
 # Error message
 
 else
-	echo "Valid installation methods are only mount, install or apk."
+	echo "Quando 'mount', 'unmount', 'install' e 'apk' esistono ma tu usi " + $method + " :|"
 fi
 
 # Delete files

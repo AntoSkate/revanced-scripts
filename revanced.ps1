@@ -53,6 +53,22 @@ if ( $method -eq "mount" )
 	Invoke-Expression -Command $revanced
 }
 
+# ReVanced unmount
+
+if ( $method -eq "unmount" )
+{
+	# Get adb device
+
+	adb start-server
+	$adb = adb devices | Select-String -Pattern "\S+"
+	$adb = $adb.Matches.Groups[1].Value
+
+	# Unmount
+
+	$revanced = "java -jar .\revanced-cli-all.jar -a " + $base + " -d " + $adb + " --uninstall"
+	Invoke-Expression -Command $revanced
+}
+
 # ReVanced install
 
 elseif ( $method -eq "install" )
@@ -82,7 +98,7 @@ elseif ( $method -eq "apk" )
 
 else
 {
-	Write-Output "Valid installation methods are only mount, install or apk."
+	Write-Output "Quando 'mount', 'unmount', 'install' e 'apk' esistono ma tu usi " + $method + " :|"
 }
 
 # Delete files
