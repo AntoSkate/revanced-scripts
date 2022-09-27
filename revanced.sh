@@ -2,20 +2,20 @@
 # Download CLI
 
 cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases/latest | grep "tag_name")"
-cli="${cli:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
+cli="${cli:15:-2}"
+curl -L -s "https://github.com/revanced/revanced-cli/releases/download/$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
 
 # Download patches
 
 patches="$(curl -s https://api.github.com/repos/revanced/revanced-patches/releases/latest | grep "tag_name")"
-patches="${patches:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
+patches="${patches:15:-2}"
+curl -L -s "https://github.com/revanced/revanced-patches/releases/download/$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
 
 # Download integrations
 
 integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases/latest | grep "tag_name")"
-integrations="${integrations:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
+integrations="${integrations:15:-2}"
+curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/$integrations/app-release-unsigned.apk" -o "integrations.apk"
 
 # Get installation method
 
@@ -83,12 +83,6 @@ then
 	# Generate apk
 
 	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters
-
-# Error message
-
-else
-	echo "Quando 'mount', 'unmount', 'install' e 'apk' esistono ma tu usi " + $method + " :|"
-fi
 
 # Delete files
 

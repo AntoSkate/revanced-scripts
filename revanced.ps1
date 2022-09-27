@@ -1,20 +1,24 @@
+# Silent iwr
+
+$ProgressPreference = 'SilentlyContinue'
+
 # Download CLI
 
-$cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases/latest" | Select-String -Pattern "\d+\u002E\d+\u002E\d+"
-$cli = $cli.Matches.Groups[0].Value
-Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
+$cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases/latest"
+$cli = ($cli | ConvertFrom-Json).tag_name
+Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
 
 # Download patches
 
-$patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases/latest" | Select-String -Pattern "\d+\u002E\d+\u002E\d+"
-$patches = $patches.Matches.Groups[0].Value
-Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
+$patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases/latest"
+$patches = ($patches | ConvertFrom-Json).tag_name
+Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
 
 # Download integrations
 
-$integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest" | Select-String -Pattern "\d+\u002E\d+\u002E\d+"
-$integrations = $integrations.Matches.Groups[0].Value
-Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
+$integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
+$integrations = ($integrations | ConvertFrom-Json).tag_name
+Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
 
 # Get installation method
 
@@ -92,13 +96,6 @@ elseif ( $method -eq "apk" )
 	# Generate apk
 
 	Invoke-Expression -Command $revanced
-}
-
-# Error message
-
-else
-{
-	Write-Output "Quando 'mount', 'unmount', 'install' e 'apk' esistono ma tu usi " + $method + " :|"
 }
 
 # Delete files
