@@ -5,20 +5,20 @@ $ProgressPreference = 'SilentlyContinue'
 # Download CLI
 
 $cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases/latest"
-$cli = ($cli | ConvertFrom-Json).tag_name
-Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
+$cli = ($cli | ConvertFrom-Json).tag_name -replace 'v',''
+Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
 
 # Download patches
 
 $patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases/latest"
-$patches = ($patches | ConvertFrom-Json).tag_name
-Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
+$patches = ($patches | ConvertFrom-Json).tag_name -replace 'v',''
+Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
 
 # Download integrations
 
 $integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-$integrations = ($integrations | ConvertFrom-Json).tag_name
-Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
+$integrations = ($integrations | ConvertFrom-Json).tag_name -replace 'v',''
+Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
 
 # Get installation method
 
