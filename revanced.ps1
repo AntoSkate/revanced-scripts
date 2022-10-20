@@ -95,7 +95,7 @@ elseif ( $method -eq "apk" )
 
 # Delete files
 
-Remove-Item -Path $base
+Remove-Item -Path $apk
 Remove-Item -Path revanced-cli-all.jar
 Remove-Item -Path revanced-patches.jar
 Remove-Item -Path integrations.apk
