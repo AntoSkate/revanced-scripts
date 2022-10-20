@@ -21,18 +21,13 @@ curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/
 
 method=$1
 
-# Get app name
+# Get apk name
 
-app=$2
-app="${app}.apk"
-
-# Get base apk name
-
-base=$3
+apk=$2
 
 # Get ReVanced CLI parameters
 
-parameters=$4
+parameters=$3
 
 # ReVanced mount
 
@@ -47,7 +42,7 @@ then
 
 	# Mount
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb --mount -e microg-support -e music-microg-support $parameters
+	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o $apk -d $adb --mount -e microg-support -e music-microg-support $parameters
 
 # ReVanced unmount
 
@@ -61,7 +56,7 @@ then
 
 	# Mount
 
-	java -jar revanced-cli-all.jar -a $base -d $adb --uninstall
+	java -jar revanced-cli-all.jar -a $apk -d $adb --uninstall
 
 # ReVanced install
 
@@ -75,7 +70,7 @@ then
 
 	# Install
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app -d $adb $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $apk -d $adb $parameters
 
 # ReVanced apk
 
@@ -83,7 +78,7 @@ elif [[ "$method" == "apk" ]]
 then
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $app $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $apk $parameters
 
 fi
 

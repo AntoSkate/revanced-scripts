@@ -24,22 +24,17 @@ Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/do
 
 $method = $args[0]
 
-# Get app name
+# Get apk name
 
-$app = $args[1]
-$app = $app + ".apk"
-
-# Get base apk name
-
-$base = $args[2]
+$apk = $args[1]
 
 # Get ReVanced CLI parameters
 
-$parameters = $args[3]
+$parameters = $args[2]
 
 # Revanced CLI command
 
-$revanced = "java -jar .\revanced-cli-all.jar -a " + $base + " -c -o " + $app + " -b .\revanced-patches.jar -m .\integrations.apk " + $parameters
+$revanced = "java -jar .\revanced-cli-all.jar -a " + $apk + " -c -o " + $apk + " -b .\revanced-patches.jar -m .\integrations.apk " + $parameters
 
 # ReVanced mount
 
@@ -69,7 +64,7 @@ if ( $method -eq "unmount" )
 
 	# Unmount
 
-	$revanced = "java -jar .\revanced-cli-all.jar -a " + $base + " -d " + $adb + " --uninstall"
+	$revanced = "java -jar .\revanced-cli-all.jar -a " + $apk + " -d " + $adb + " --uninstall"
 	Invoke-Expression -Command $revanced
 }
 
