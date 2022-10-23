@@ -34,7 +34,7 @@ $parameters = $args[2]
 
 # Revanced CLI command
 
-$revanced = "java -jar .\revanced-cli-all.jar -a " + $apk + " -c -o " + $apk + " -b .\revanced-patches.jar -m .\integrations.apk " + $parameters
+$revanced = "java -jar .\revanced-cli-all.jar -a " + $apk + " -c -o out -b .\revanced-patches.jar -m .\integrations.apk " + $parameters
 
 # ReVanced mount
 

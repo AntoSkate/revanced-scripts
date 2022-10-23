@@ -42,7 +42,7 @@ then
 
 	# Mount
 
-	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o $apk -d $adb --mount -e microg-support -e music-microg-support $parameters
+	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e microg-support -e music-microg-support $parameters
 
 # ReVanced unmount
 
@@ -70,7 +70,7 @@ then
 
 	# Install
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $apk -d $adb $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
 
 # ReVanced apk
 
@@ -78,7 +78,7 @@ elif [[ "$method" == "apk" ]]
 then
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o $apk $parameters
+	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o out $parameters
 
 fi
 
