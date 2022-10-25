@@ -2,23 +2,61 @@
 
 $ProgressPreference = 'SilentlyContinue'
 
-# Download CLI
+# Update ReVanced files
+
+if ( -not ( Test-Path -Path .\version.json -PathType Leaf ) ) {
+$version = @"
+{
+	"cli": "",
+	"patches": "",
+	"integrations": ""
+}
+"@
+
+$version | Out-File .\version.json
+}
+
+$version = Get-Content .\version.json | ConvertFrom-Json
 
 $cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases/latest"
-$cli = ($cli | ConvertFrom-Json).tag_name -replace 'v',''
-Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
-
-# Download patches
-
+$cli = ( $cli | ConvertFrom-Json  ).tag_name -replace 'v',''
 $patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases/latest"
-$patches = ($patches | ConvertFrom-Json).tag_name -replace 'v',''
-Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
-
-# Download integrations
-
+$patches = ( $patches | ConvertFrom-Json).tag_name -replace 'v',''
 $integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-$integrations = ($integrations | ConvertFrom-Json).tag_name -replace 'v',''
-Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
+$integrations = ( $integrations | ConvertFrom-Json ).tag_name -replace 'v',''
+
+if ( $version.cli -lt $cli ) {
+	if ( Test-Path -Path .\revanced-cli-all.jar -PathType Leaf ) {
+		Remove-Item -Path .\revanced-cli-all.jar
+	}
+	
+	$version.cli = $cli
+	$version | ConvertTo-Json | Out-File .\version.json
+
+	Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
+}
+
+if ( $version.patches -lt $patches ) {
+	if ( Test-Path -Path .\revanced-patches.jar -PathType Leaf ) {
+		Remove-Item -Path .\revanced-patches.jar
+	}
+	
+	$version.patches = $patches
+	$version | ConvertTo-Json | Out-File .\version.json
+
+	Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
+}
+
+if ( $version.integrations -lt $integrations ) {
+	if ( Test-Path -Path .\integrations.apk -PathType Leaf ) {
+		Remove-Item -Path .\integrations.apk
+	}
+	
+	$version.integrations = $integrations
+	$version | ConvertTo-Json | Out-File .\version.json
+
+	Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
+}
 
 # Get installation method
 
@@ -54,7 +92,7 @@ if ( $method -eq "mount" )
 
 # ReVanced unmount
 
-if ( $method -eq "unmount" )
+elseif ( $method -eq "unmount" )
 {
 	# Get adb device
 
@@ -92,9 +130,3 @@ elseif ( $method -eq "apk" )
 
 	Invoke-Expression -Command $revanced
 }
-
-# Delete files
-
-Remove-Item -Path revanced-cli-all.jar
-Remove-Item -Path revanced-patches.jar
-Remove-Item -Path integrations.apk

@@ -1,0 +1,7 @@
+version.json
+revanced-cli-all.jar
+revanced-patches.jar
+integrations.apk
+*.apk
+*.keystore
+!/keystores/*

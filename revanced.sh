@@ -1,21 +1,62 @@
 #!/bin/bash
-# Download CLI
+# Update ReVanced files
+
+if [[ ! -f version.json ]]
+then
+	echo -e '{\n\t"cli": "",\n\t"patches": "",\n\t"integrations": ""\n}' > version.json
+fi
+
+cliversion="$(grep "cli" version.json)"
+cliversion="${cliversion:9:-2}"
+patchesversion="$(grep "patches" version.json)"
+patchesversion="${patchesversion:13:-2}"
+integrationsversion="$(grep "integrations" version.json)"
+integrationsversion="${integrationsversion:18:-1}"
 
 cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases/latest | grep "tag_name")"
 cli="${cli:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
-
-# Download patches
-
 patches="$(curl -s https://api.github.com/repos/revanced/revanced-patches/releases/latest | grep "tag_name")"
 patches="${patches:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
-
-# Download integrations
-
 integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases/latest | grep "tag_name")"
 integrations="${integrations:16:-2}"
-curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
+
+if [[ $cliversion < $cli ]]
+then
+	if [[ -f revanced-cli-all.jar ]]
+	then
+		rm revanced-cli-all.jar
+	fi
+
+	cliversion=$cli
+
+	curl -L -s "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
+fi
+
+if [[ $patchesversion < $patches ]]
+then
+	if [[ -f revanced-patches.jar ]]
+	then
+		rm revanced-patches.jar
+	fi
+
+	patchesversion=$patches
+
+	curl -L -s "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
+fi
+
+if [[ $integrationsversion < $integrations ]]
+then
+	if [[ -f integrations.apk ]]
+	then
+		rm integrations.apk
+	fi
+
+	integrationsversion=$integrations
+
+	curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
+fi
+
+$(echo -e "{\n\t\"cli\": \"$cliversion\",\n\t\"patches\": \"$patchesversion\",\n\t\"integrations\": \"$integrationsversion\"\n}" > version.json)
 
 # Get installation method
 
@@ -81,9 +122,3 @@ then
 	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o out $parameters
 
 fi
-
-# Delete files
-
-rm revanced-cli-all.jar
-rm revanced-patches.jar
-rm integrations.apk
