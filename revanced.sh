@@ -20,7 +20,7 @@ patches="${patches:16:-2}"
 integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases/latest | grep "tag_name")"
 integrations="${integrations:16:-2}"
 
-if [[ $cliversion < $cli ]]
+if [[ $cliversion != $cli ]]
 then
 	if [[ -f revanced-cli-all.jar ]]
 	then
@@ -32,7 +32,7 @@ then
 	curl -L -s "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
 fi
 
-if [[ $patchesversion < $patches ]]
+if [[ $patchesversion != $patches ]]
 then
 	if [[ -f revanced-patches.jar ]]
 	then
@@ -44,7 +44,7 @@ then
 	curl -L -s "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
 fi
 
-if [[ $integrationsversion < $integrations ]]
+if [[ $integrationsversion != $integrations ]]
 then
 	if [[ -f integrations.apk ]]
 	then

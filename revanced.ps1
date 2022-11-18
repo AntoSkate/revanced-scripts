@@ -25,7 +25,7 @@ $patches = ( $patches | ConvertFrom-Json).tag_name -replace 'v',''
 $integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
 $integrations = ( $integrations | ConvertFrom-Json ).tag_name -replace 'v',''
 
-if ( $version.cli -lt $cli ) {
+if ( $version.cli -ne $cli ) {
 	if ( Test-Path -Path .\revanced-cli-all.jar -PathType Leaf ) {
 		Remove-Item -Path .\revanced-cli-all.jar
 	}
@@ -36,7 +36,7 @@ if ( $version.cli -lt $cli ) {
 	Invoke-WebRequest "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -OutFile "revanced-cli-all.jar"
 }
 
-if ( $version.patches -lt $patches ) {
+if ( $version.patches -ne $patches ) {
 	if ( Test-Path -Path .\revanced-patches.jar -PathType Leaf ) {
 		Remove-Item -Path .\revanced-patches.jar
 	}
@@ -47,7 +47,7 @@ if ( $version.patches -lt $patches ) {
 	Invoke-WebRequest "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -OutFile "revanced-patches.jar"
 }
 
-if ( $version.integrations -lt $integrations ) {
+if ( $version.integrations -ne $integrations ) {
 	if ( Test-Path -Path .\integrations.apk -PathType Leaf ) {
 		Remove-Item -Path .\integrations.apk
 	}
