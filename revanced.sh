@@ -111,7 +111,7 @@ then
 
 	# Install
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
+	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
 
 # ReVanced apk
 
@@ -119,6 +119,6 @@ elif [[ "$method" == "apk" ]]
 then
 	# Generate apk
 
-	java -jar revanced-cli-all.jar -a $base -c -m integrations.apk -b revanced-patches.jar -o out $parameters
+	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out $parameters
 
 fi
