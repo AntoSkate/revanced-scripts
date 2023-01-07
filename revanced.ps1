@@ -55,7 +55,7 @@ if ( $version.integrations -ne $integrations ) {
 	$version.integrations = $integrations
 	$version | ConvertTo-Json | Out-File .\version.json
 
-	Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -OutFile "integrations.apk"
+	Invoke-WebRequest "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/revanced-integrations-$integrations.apk" -OutFile "integrations.apk"
 }
 
 # Get installation method

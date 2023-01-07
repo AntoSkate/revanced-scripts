@@ -53,7 +53,7 @@ then
 
 	integrationsversion=$integrations
 
-	curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/app-release-unsigned.apk" -o "integrations.apk"
+	curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/revanced-integrations-$integrations.apk" -o "integrations.apk"
 fi
 
 $(echo -e "{\n\t\"cli\": \"$cliversion\",\n\t\"patches\": \"$patchesversion\",\n\t\"integrations\": \"$integrationsversion\"\n}" > version.json)
