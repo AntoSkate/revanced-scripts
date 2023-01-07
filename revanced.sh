@@ -13,12 +13,12 @@ patchesversion="${patchesversion:13:-2}"
 integrationsversion="$(grep "integrations" version.json)"
 integrationsversion="${integrationsversion:18:-1}"
 
-cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases/latest | grep "tag_name")"
-cli="${cli:16:-2}"
-patches="$(curl -s https://api.github.com/repos/revanced/revanced-patches/releases/latest | grep "tag_name")"
-patches="${patches:16:-2}"
-integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases/latest | grep "tag_name")"
-integrations="${integrations:16:-2}"
+cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases | grep -m 1 "tag_name")"
+cli="${cli:18:-2}"
+patches="$(curl -s https://api.github.com/repos/revanced/revanced-patches/releases | grep -m 1 "tag_name")"
+patches="${patches:18:-2}"
+integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases | grep -m 1 "tag_name")"
+integrations="${integrations:18:-2}"
 
 if [[ $cliversion != $cli ]]
 then

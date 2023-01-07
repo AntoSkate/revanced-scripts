@@ -18,12 +18,12 @@ $version | Out-File .\version.json
 
 $version = Get-Content .\version.json | ConvertFrom-Json
 
-$cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases/latest"
-$cli = ( $cli | ConvertFrom-Json  ).tag_name -replace 'v',''
-$patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases/latest"
-$patches = ( $patches | ConvertFrom-Json).tag_name -replace 'v',''
-$integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases/latest"
-$integrations = ( $integrations | ConvertFrom-Json ).tag_name -replace 'v',''
+$cli = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-cli/releases"
+$cli = (( $cli | ConvertFrom-Json ).tag_name | Select-Object -First 1).Remove(0,1)
+$patches = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-patches/releases"
+$patches = (( $patches | ConvertFrom-Json ).tag_name | Select-Object -First 1).Remove(0,1)
+$integrations = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-integrations/releases"
+$integrations = (( $integrations | ConvertFrom-Json ).tag_name | Select-Object -First 1).Remove(0,1)
 
 if ( $version.cli -ne $cli ) {
 	if ( Test-Path -Path .\revanced-cli-all.jar -PathType Leaf ) {
