@@ -1,124 +1,72 @@
 #!/bin/bash
-# Update ReVanced files
 
+# Set script arguments
+operation=$1
+apk=$2
+parameters=$3
+
+# Create functions
+get_adb_device() {
+	adb start-server
+	adb="$(adb devices | grep '[[:graph:]]')"
+	adb="${adb:24:-7}"
+}
+mount() {
+	get_adb_device
+	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e microg-support -e music-microg-support $parameters
+}
+unmount() {
+	get_adb_device
+	java -jar revanced-cli-all.jar -a $apk -d $adb --uninstall
+}
+install() {
+	get_adb_device
+	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
+}
+apk() {
+	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out $parameters
+}
+
+# Update ReVanced files
 if [[ ! -f version.json ]]
 then
 	echo -e '{\n\t"cli": "",\n\t"patches": "",\n\t"integrations": ""\n}' > version.json
 fi
 
-cliversion="$(grep "cli" version.json)"
-cliversion="${cliversion:9:-2}"
-patchesversion="$(grep "patches" version.json)"
-patchesversion="${patchesversion:13:-2}"
-integrationsversion="$(grep "integrations" version.json)"
-integrationsversion="${integrationsversion:18:-1}"
+for repo in "cli 9 -2 revanced-cli-all.jar revanced-cli- -all.jar" "patches 13 -2 revanced-patches.jar revanced-patches- .jar" "integrations 18 -1 revanced-integrations.apk revanced-integrations- .apk"
+do
+	set $repo
 
-cli="$(curl -s https://api.github.com/repos/revanced/revanced-cli/releases | grep -m 1 "tag_name")"
-cli="${cli:18:-2}"
-patches="$(curl -s https://api.github.com/repos/revanced/revanced-patches/releases | grep -m 1 "tag_name")"
-patches="${patches:18:-2}"
-integrations="$(curl -s https://api.github.com/repos/revanced/revanced-integrations/releases | grep -m 1 "tag_name")"
-integrations="${integrations:18:-2}"
+	oldversion="$(grep "$1" version.json)"
+	oldversion="${oldversion:$2:$3}"
 
-if [[ $cliversion != $cli ]]
-then
-	if [[ -f revanced-cli-all.jar ]]
+	version="$(curl -s https://api.github.com/repos/revanced/revanced-$1/releases | grep -m 1 "tag_name")"
+	version="${version:18:-2}"
+
+	file="$5"$version"$6"
+
+	if [[ $oldversion != $version ]]
 	then
-		rm revanced-cli-all.jar
+		if [[ -f $4 ]]
+		then
+			rm $4
+		fi
+
+		echo "---> Downloading $1 version $version <---"
+		curl -s -L "https://github.com/revanced/revanced-$1/releases/download/v$version/$file" -o $4
 	fi
 
-	cliversion=$cli
+	export $1=$version
+done
 
-	curl -L -s "https://github.com/revanced/revanced-cli/releases/download/v$cli/revanced-cli-$cli-all.jar" -o "revanced-cli-all.jar"
-fi
+$(echo -e "{\n\t\"cli\": \"$cli\",\n\t\"patches\": \"$patches\",\n\t\"integrations\": \"$integrations\"\n}" > version.json)
 
-if [[ $patchesversion != $patches ]]
-then
-	if [[ -f revanced-patches.jar ]]
+# Patch apk
+for valid_operation in mount unmount install apk
+do
+	if [[ "$operation" == "$valid_operation" ]]
 	then
-		rm revanced-patches.jar
+		$operation
+		break
 	fi
-
-	patchesversion=$patches
-
-	curl -L -s "https://github.com/revanced/revanced-patches/releases/download/v$patches/revanced-patches-$patches.jar" -o "revanced-patches.jar"
-fi
-
-if [[ $integrationsversion != $integrations ]]
-then
-	if [[ -f integrations.apk ]]
-	then
-		rm integrations.apk
-	fi
-
-	integrationsversion=$integrations
-
-	curl -L -s "https://github.com/revanced/revanced-integrations/releases/download/v$integrations/revanced-integrations-$integrations.apk" -o "integrations.apk"
-fi
-
-$(echo -e "{\n\t\"cli\": \"$cliversion\",\n\t\"patches\": \"$patchesversion\",\n\t\"integrations\": \"$integrationsversion\"\n}" > version.json)
-
-# Get installation method
-
-method=$1
-
-# Get apk name
-
-apk=$2
-
-# Get ReVanced CLI parameters
-
-parameters=$3
-
-# ReVanced mount
-
-if [[ "$method" == "mount" ]]
-then
-	
-	# Get adb device
-
-	adb start-server
-	adb="$(adb devices | grep '[[:graph:]]')"
-	adb="${adb:24:-7}"
-
-	# Mount
-
-	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e microg-support -e music-microg-support $parameters
-
-# ReVanced unmount
-
-elif [[ "$method" == "unmount" ]]
-then
-	# Get adb device
-
-	adb start-server
-	adb="$(adb devices | grep '[[:graph:]]')"
-	adb="${adb:24:-7}"
-
-	# Mount
-
-	java -jar revanced-cli-all.jar -a $apk -d $adb --uninstall
-
-# ReVanced install
-
-elif [[ "$method" == "install" ]]
-then
-	# Get adb device
-
-	adb start-server
-	adb="$(adb devices | grep '[[:graph:]]')"
-	adb="${adb:24:-7}"
-
-	# Install
-
-	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
-
-# ReVanced apk
-
-elif [[ "$method" == "apk" ]]
-then
-	# Generate apk
-
-	java -jar revanced-cli-all.jar -a $apk -c -m integrations.apk -b revanced-patches.jar -o out $parameters
-
-fi
+done

@@ -1,8 +1,6 @@
 version.json
 options.toml
-revanced-cli-all.jar
-revanced-patches.jar
-integrations.apk
+*.jar
 *.apk
 *.keystore
 !/keystores/*
