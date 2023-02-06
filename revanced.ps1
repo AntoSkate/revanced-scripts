@@ -1,3 +1,6 @@
+# Remove aliases
+Get-Alias | Remove-Alias -Force
+
 # Silent iwr
 $ProgressPreference = 'SilentlyContinue'
 
