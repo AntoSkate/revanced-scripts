@@ -13,7 +13,7 @@ get_adb_device() {
 }
 mount() {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e microg-support -e music-microg-support $parameters
+	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e vanced-microg-support -e music-microg-support $parameters
 }
 unmount() {
 	get_adb_device
