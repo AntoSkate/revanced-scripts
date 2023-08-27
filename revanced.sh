@@ -13,18 +13,18 @@ get_adb_device() {
 }
 mount() {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e vanced-microg-support -e music-microg-support $parameters
+	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --exclude vanced-microg-support --exclude music-microg-support --out out.apk --device-serial $adb --mount $parameters $apk
 }
 unmount() {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -d $adb --uninstall
+	java -jar revanced-cli-all.jar utility uninstall --unmount $apk $adb
 }
 install() {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
+	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --out out.apk --device-serial $adb $parameters $apk
 }
 apk() {
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out $parameters
+	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --out out.apk $parameters $apk
 }
 
 # Update ReVanced files
@@ -40,8 +40,8 @@ do
 	oldversion="$(grep "$1" version.json)"
 	oldversion="${oldversion:$2:$3}"
 
-	version="$(curl -s https://api.github.com/repos/revanced/revanced-$1/releases | grep -m 1 "tag_name")"
-	version="${version:18:-2}"
+	version="$(curl -s https://api.revanced.app/v2/revanced-$1/releases/latest?dev=true | grep -Eo '"tag_name":"[^"]*+"')"
+	version="${version:13:-1}"
 
 	file="$5"$version"$6"
 
