@@ -13,18 +13,18 @@ get_adb_device() {
 }
 mount() {
 	get_adb_device
-	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --exclude vanced-microg-support --exclude music-microg-support --out out.apk --device-serial $adb --mount $parameters $apk
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -e "GmsCore support" -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
 }
 unmount() {
 	get_adb_device
-	java -jar revanced-cli-all.jar utility uninstall --unmount $apk $adb
+	java -jar revanced-cli-all.jar utility uninstall -p $apk -u $adb
 }
 install() {
 	get_adb_device
-	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --out out.apk --device-serial $adb $parameters $apk
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -m revanced-integrations.apk -o out.apk -p $parameters $apk
 }
 apk() {
-	java -jar revanced-cli-all.jar patch --patch-bundle revanced-patches.jar --merge revanced-integrations.apk --out out.apk $parameters $apk
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
 }
 
 # Update ReVanced files

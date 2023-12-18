@@ -17,18 +17,18 @@ function get_adb_device {
 }
 function mount {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb --mount -e vanced-microg-support -e music-microg-support $parameters
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -e "GmsCore support" -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
 }
 function unmount {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -d $adb --uninstall
+	java -jar revanced-cli-all.jar utility uninstall -p $apk -u $adb
 }
 function install {
 	get_adb_device
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out -d $adb $parameters
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -m revanced-integrations.apk -o out.apk -p $parameters $apk
 }
 function apk {
-	java -jar revanced-cli-all.jar -a $apk -c -m revanced-integrations.apk -b revanced-patches.jar -o out $parameters
+	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
 }
 
 # Update ReVanced files
