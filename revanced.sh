@@ -1,39 +1,33 @@
 #!/bin/bash
 
+echo -e "//TODO\nuse $(dirname 0) to return the script location when using it from another directory\n\n"
+
 # Set script arguments
 operation=$1
 apk=$2
 parameters=$3
 
 # Create functions
-get_adb_device() {
-	adb start-server
-	adb="$(adb devices | grep '[[:graph:]]')"
-	adb="${adb:24:-7}"
-}
 mount() {
-	get_adb_device
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -e "GmsCore support" -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -d "GmsCore support" -i --mount -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 unmount() {
-	get_adb_device
-	java -jar revanced-cli-all.jar utility uninstall -p $apk -u $adb
+	java -jar revanced-cli-all.jar utility uninstall -u -p $apk
 }
 install() {
-	get_adb_device
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -m revanced-integrations.apk -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -i -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 apk() {
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 
 # Update ReVanced files
 if [[ ! -f version.json ]]
 then
-	echo -e '{\n\t"cli": "",\n\t"patches": "",\n\t"integrations": ""\n}' > version.json
+	echo -e '{\n\t"cli": "",\n\t"patches": ""\n}' > version.json
 fi
 
-for repo in "cli 9 -2 revanced-cli-all.jar revanced-cli- -all.jar" "patches 13 -2 revanced-patches.jar revanced-patches- .jar" "integrations 18 -1 revanced-integrations.apk revanced-integrations- .apk"
+for repo in "cli 9 -2 revanced-cli-all.jar revanced-cli- -all.jar" "patches 13 -1 revanced-patches.rvp patches- .rvp"
 do
 	set $repo
 
@@ -59,7 +53,7 @@ do
 	export $1=$version
 done
 
-$(echo -e "{\n\t\"cli\": \"$cli\",\n\t\"patches\": \"$patches\",\n\t\"integrations\": \"$integrations\"\n}" > version.json)
+$(echo -e "{\n\t\"cli\": \"$cli\",\n\t\"patches\": \"$patches\"\n}" > version.json)
 
 # Patch apk
 for valid_operation in mount unmount install apk

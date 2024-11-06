@@ -10,45 +10,36 @@ $apk = $args[1]
 $parameters = $args[2]
 
 # Create functions
-function get_adb_device {
-	adb start-server
-	$adb = adb devices | Select-String -Pattern "\S+"
-	$script:adb = $adb.Matches.Groups[1].Value
-}
 function mount {
-	get_adb_device
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -e "GmsCore support" -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -d "GmsCore support" -i --mount -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 function unmount {
-	get_adb_device
-	java -jar revanced-cli-all.jar utility uninstall -p $apk -u $adb
+	java -jar revanced-cli-all.jar utility uninstall -u -p $apk
 }
 function install {
-	get_adb_device
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -d $adb -m revanced-integrations.apk -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -i -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 function apk {
-	java -jar revanced-cli-all.jar patch -b revanced-patches.jar -m revanced-integrations.apk --mount -o out.apk -p $parameters $apk
+	java -jar revanced-cli-all.jar patch -o out.apk -p revanced-patches.rvp --purge $parameters $apk
 }
 
 # Update ReVanced files
 if ( -not ( Test-Path -Path .\version.json -PathType Leaf ) ) {
-	$versionfile = "{`n`t`"cli`": `"`",`n`t`"patches`": `"`",`n`t`"integrations`": `"`"`n}"
+	$versionfile = "{`n`t`"cli`": `"`",`n`t`"patches`": `"`"`n}"
 	$versionfile | Out-File .\version.json
 }
 
 $cli = "cli", "revanced-cli-all.jar", "revanced-cli-", "-all.jar"
-$patches = "patches", "revanced-patches.jar", "revanced-patches-", ".jar"
-$integrations = "integrations", "revanced-integrations.apk", "revanced-integrations-", ".apk"
+$patches = "patches", "revanced-patches.rvp", "patches-", ".rvp"
 
-foreach ( $repo in $cli, $patches, $integrations ) {
+foreach ( $repo in $cli, $patches ) {
 	$reponame = $repo[0]
 	$repofile = $repo[1]
 
 	$versionfile = Get-Content .\version.json | ConvertFrom-Json
 	$oldversion = $versionfile.$reponame
 
-	$version = Invoke-WebRequest -Uri "https://api.github.com/repos/revanced/revanced-$reponame/releases"
+	$version = Invoke-WebRequest -Uri "https://api.revanced.app/v2/revanced-$reponame/releases/latest?dev=true"
 	$version = (( $version | ConvertFrom-Json ).tag_name | Select-Object -First 1).Remove(0,1)
 
 	if ( $oldversion -ne $version ) {
